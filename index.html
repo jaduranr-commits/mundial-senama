@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundial SENAMA 2026</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { margin: 0; font-family: sans-serif; background-color: #0D1B2A; color: white; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // DATOS BASE
+        const ADMIN_PASSWORD = "SENAMA2026";
+        const PLANTELES = ["Gabinete", "Informática", "Jurídica", "Finanzas", "CR Metropolitana", "CR Valparaíso", "CR Biobío"]; 
+        const PARTIDOS = [
+            { id: 1, fecha: "11 Jun", local: "México", visita: "Sudáfrica" },
+            { id: 2, fecha: "12 Jun", local: "Canadá", visita: "Qatar" }
+        ];
+
+        function App() {
+            const [vista, setVista] = useState("ranking");
+            const [pronosticos, setPronosticos] = useState(() => JSON.parse(localStorage.getItem("prons") || "{}"));
+            const [resultados, setResultados] = useState(() => JSON.parse(localStorage.getItem("res") || "{}"));
+
+            useEffect(() => {
+                localStorage.setItem("prons", JSON.stringify(pronosticos));
+                localStorage.setItem("res", JSON.stringify(resultados));
+            }, [pronosticos, resultados]);
+
+            return (
+                <div style={{padding: '20px'}}>
+                    <header style={{textAlign: 'center', borderBottom: '2px solid #E8B84B', paddingBottom: '10px'}}>
+                        <h1 style={{color: '#E8B84B'}}>🏆 DESAYUNO DE CAMPEONES</h1>
+                        <p>SENAMA 2026</p>
+                    </header>
+                    
+                    <nav style={{display: 'flex', justifyContent: 'center', gap: '10px', margin: '20px 0'}}>
+                        <button onClick={() => setVista("ranking")} style={{padding: '10px 20px', borderRadius: '20px', border: 'none', cursor: 'pointer', background: vista === 'ranking' ? '#E8B84B' : '#1A3A5C', color: 'white'}}>Ranking</button>
+                        <button onClick={() => setVista("pronos")} style={{padding: '10px 20px', borderRadius: '20px', border: 'none', cursor: 'pointer', background: vista === 'pronos' ? '#E8B84B' : '#1A3A5C', color: 'white'}}>Pronósticos</button>
+                    </nav>
+
+                    {vista === "ranking" ? (
+                        <div>
+                            <h2>Tabla de Posiciones</h2>
+                            <p>Aquí aparecerán los puntajes...</p>
+                            {PLANTELES.map(p => (
+                                <div key={p} style={{background: '#1A3A5C', margin: '5px 0', padding: '10px', borderRadius: '5px', display: 'flex', justifyContent: 'space-between'}}>
+                                    <span>{p}</span>
+                                    <span>0 pts</span>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p style={{textAlign: 'center'}}>Sección de pronósticos activa. Selecciona tu unidad.</p>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
